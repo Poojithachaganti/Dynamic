@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Currency Converter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f4f8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .converter {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 320px;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 0.7rem;
+      margin: 0.5rem 0;
+      font-size: 1rem;
+    }
+    #result {
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="converter">
+    <h2>💱 Currency Converter</h2>
+    <input type="number" id="amount" placeholder="Enter amount" />
+    <select id="from-currency"></select>
+    <select id="to-currency"></select>
+    <button onclick="convertCurrency()">Convert</button>
+    <p id="result"></p>
+  </div>
+
+  <script>
+    const currencyList = {
+      "USD": "United States – United States Dollar",
+      "EUR": "European Union – Euro",
+      "GBP": "United Kingdom – British Pound Sterling",
+      "JPY": "Japan – Japanese Yen",
+      "AUD": "Australia – Australian Dollar",
+      "CAD": "Canada – Canadian Dollar",
+      "CHF": "Switzerland – Swiss Franc",
+      "CNY": "China – Chinese Yuan",
+      "INR": "India – Indian Rupee",
+      "BRL": "Brazil – Brazilian Real",
+      "RUB": "Russia – Russian Ruble",
+      "ZAR": "South Africa – South African Rand",
+      "SGD": "Singapore – Singapore Dollar",
+      "NZD": "New Zealand – New Zealand Dollar",
+      "KRW": "South Korea – South Korean Won",
+      "AED": "United Arab Emirates – UAE Dirham",
+      "SAR": "Saudi Arabia – Saudi Riyal",
+      "MYR": "Malaysia – Malaysian Ringgit",
+      "THB": "Thailand – Thai Baht",
+      "NGN": "Nigeria – Nigerian Naira",
+      "PKR": "Pakistan – Pakistani Rupee",
+      "EGP": "Egypt – Egyptian Pound",
+      "ARS": "Argentina – Argentine Peso",
+      "MXN": "Mexico – Mexican Peso",
+      "TRY": "Turkey – Turkish Lira",
+      "HKD": "Hong Kong – Hong Kong Dollar",
+      "SEK": "Sweden – Swedish Krona",
+      "NOK": "Norway – Norwegian Krone",
+      "DKK": "Denmark – Danish Krone",
+      "PLN": "Poland – Polish Zloty",
+      "CZK": "Czech Republic – Czech Koruna",
+      "HUF": "Hungary – Hungarian Forint",
+      "RON": "Romania – Romanian Leu",
+      "UAH": "Ukraine – Ukrainian Hryvnia",
+      "VND": "Vietnam – Vietnamese Dong",
+      "PKR": "Pakistan – Pakistani Rupee",
+      "IDR": "Indonesia – Indonesian Rupiah",
+      "AED": "UAE – UAE Dirham",
+      "KWD": "Kuwait – Kuwaiti Dinar"
+      // You can add more currencies here...
+    };
+
+    const fromCurrency = document.getElementById("from-currency");
+    const toCurrency = document.getElementById("to-currency");
+    const result = document.getElementById("result");
+
+    // Populate dropdowns
+    Object.entries(currencyList).forEach(([code, label]) => {
+      const opt1 = document.createElement("option");
+      const opt2 = opt1.cloneNode();
+      opt1.value = opt2.value = code;
+      opt1.text = opt2.text = label;
+      fromCurrency.appendChild(opt1);
+      toCurrency.appendChild(opt2);
+    });
+    fromCurrency.value = "USD";
+    toCurrency.value = "INR";
+
+    function convertCurrency() {
+      const amount = +document.getElementById("amount").value;
+      const from = fromCurrency.value;
+      const to = toCurrency.value;
+      if (!amount) {
+        return alert("Please enter an amount");
+      }
+      fetch(`https://api.exchangerate-api.com/v4/latest/${from}`)
+        .then(res => res.json())
+        .then(data => {
+          const rate = data.rates[to];
+          result.textContent = `${amount} ${from} = ${(amount * rate).toFixed(2)} ${to}`;
+        })
+        .catch(() => {
+          result.textContent = "Error fetching exchange rate.";
+        });
+    }
+  </script>
+</body>
+</html>
